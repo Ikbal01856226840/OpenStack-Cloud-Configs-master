@@ -1,0 +1,31 @@
+
+#cloud-config
+datasource: [ Openstack ]
+  
+users:
+  - name: india
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups:
+      - sudo
+      - docker
+      - wheel
+    ssh-authorized-keys: 
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDzugBoyAh99fdD1sX30TxvZzsfrKGG0VntnyeRZTQFC+TvnUSX2Kpq2imUPaDl+FGIaczN6ewAhx27RaRjcA4DnJ6f4L1DhZaMqkAuSSmdeFmYaOPGn/czLsHmGxbgKGdlFQhYNkHmw2gH3svcJ+L54E9ot/xiTpGs4kqXl7+qNPW35eZwodrGkaWoK44iMVAY8stYxO99/2ypgrwNp7sI+1cK4fISFEEqaqb1tgBkNCjJzXgJF8K5kAH/QxyMRQBk8atMcipNju7FKEfz7hkyU/6k0oJXLhAgnxqjdHlCqNCgfvBkrehc7H7iCY8g5NuWSpevAvAFRkXTPSKIFxH9 india@localhost.localdomain
+
+write_files:
+  - path: "/etc/resolv.conf"
+    permissions: "0644"
+    owner: root:root
+    content: |
+     search ayinla.com
+     domain ayinla.com
+     nameserver 8.8.8.8
+     nameserver 10.0.0.200
+     
+  - path: "/etc/hosts"
+    permissions: "0644"
+    owner: root:root
+    content:  |
+      10.0.0.200 openstack.ayinla.com
+      10.0.0.109 fedora.ayinla.com
+

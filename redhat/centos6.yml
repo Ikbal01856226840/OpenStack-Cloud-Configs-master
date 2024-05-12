@@ -1,0 +1,36 @@
+#cloud-config
+
+runcmd:
+  - yum groupinstall "Development tools" -y
+
+
+users:
+  - name: india
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: wheel
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDzugBoyAh99fdD1sX30TxvZzsfrKGG0VntnyeRZTQFC+TvnUSX2Kpq2imUPaDl+FGIaczN6ewAhx27RaRjcA4DnJ6f4L1DhZaMqkAuSSmdeFmYaOPGn/czLsHmGxbgKGdlFQhYNkHmw2gH3svcJ+L54E9ot/xiTpGs4kqXl7+qNPW35eZwodrGkaWoK44iMVAY8stYxO99/2ypgrwNp7sI+1cK4fISFEEqaqb1tgBkNCjJzXgJF8K5kAH/QxyMRQBk8atMcipNju7FKEfz7hkyU/6k0oJXLhAgnxqjdHlCqNCgfvBkrehc7H7iCY8g5NuWSpevAvAFRkXTPSKIFxH9 india@localhost.localdomain
+    shell: /bin/bash
+package_upgrade: true
+packages:
+  - epel-release
+  - git
+  - kernel-devel
+  - openssl-devel
+  - etcd
+  - kubernetes
+  - flannel
+  - vim
+  - ntp
+  - ruby
+  - wget
+  - krb5-workstation
+  - pam_krb5
+  - haveged
+  - rng-tools
+  - firewalld.noarch
+  - NetworkManager
+  - bind-utils
+  - bash-completion
+power_state:
+  mode: reboot

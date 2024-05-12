@@ -1,0 +1,123 @@
+heat_template_version: 2016-10-14
+description: create rhce servers
+
+resources:
+  vol1:
+    type: OS::Cinder::Volume
+    properties:
+      availability_zone: nova
+      description: volume for server 1
+      name: volume-1
+      size: 1
+  vol2:
+    type: OS::Cinder::Volume
+    properties:
+      availability_zone: nova
+      description: volume for server 2
+      name: volume-2
+      size: 1
+      
+  vol3:
+    type: OS::Cinder::Volume
+    properties:
+      availability_zone: nova
+      description: volume for server 3
+      name: volume-3
+      size: 1
+    
+  inst1:
+    type: OS::Nova::Server
+    properties:
+      name: rhce-server-1
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: centos-7
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.150/cloud-configs/redhat/centos-cloud-config.yml
+      networks:
+        - network: int-net
+
+  inst2:
+    type: OS::Nova::Server
+    properties:
+      name: rhce-server-2
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: centos-7
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.150/cloud-configs/redhat/centos-cloud-config.yml
+      networks:
+        - network: int-net
+        
+  inst3:
+    type: OS::Nova::Server
+    properties:
+      name: rhce-server-3
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: centos-7
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.150/cloud-configs/redhat/centos-cloud-config.yml
+      networks:
+        - network: int-net
+  inst4:
+    type: OS::Nova::Server
+    properties:
+      name: rhce-client
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: centos-7
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.150/cloud-configs/redhat/centos-cloud-config.yml
+      networks:
+       - network: int-net
+
+  floating_ip1:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext-net
+  floating_ip2:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext-net
+  floating_ip3:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext-net
+  floating_ip4:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: ext-net
+      
+  association1:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip1 }
+      server_id: { get_resource: inst1}
+  association2:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip2 }
+      server_id: { get_resource: inst2}
+  association3:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip3 }
+      server_id: { get_resource: inst3}
+  association4:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip4 }
+      server_id: { get_resource: inst4}

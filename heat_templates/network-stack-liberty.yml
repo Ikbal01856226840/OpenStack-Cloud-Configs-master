@@ -1,0 +1,58 @@
+heat_template_version: 2015-10-15
+description: create networks
+parameters:
+  ext_subnet_cidr:
+    type: string
+  ext_subnet_gateway:
+    type: string
+  int_subnet_cidr:
+    type: string
+  dns_servers:
+    type: string
+
+resources:
+  ext-net:
+    type: OS::Neutron::ProviderNet
+    properties:
+      name: ext-net
+      network_type: flat
+      physical_network: extnet
+      
+      shared: false
+  ext-subnet:
+    type: OS::Neutron::Subnet
+   
+    properties:
+      name: ext-subnet
+      enable_dhcp: false
+      network_id: { get_resource: ext-net }
+      cidr: { get_param: ext_subnet_cidr }
+      gateway_ip: { get_param: ext_subnet_gateway }
+ 
+      dns_nameservers: { get_param: dns_servers }
+      ip_version: 4
+      enable_dhcp: false
+  
+  int-net:
+    type: OS::Neutron::Net
+    properties:
+      name: int-net
+  int-subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: int-subnet
+      network_id: { get_resource: int-net }
+      cidr: { get_param: int_subnet_cidr }
+      ip_version: 4
+      enable_dhcp: true
+      
+  router1:
+    type: OS::Neutron::Router
+    properties:
+      name: router1
+
+  int-net-router-interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: { get_resource: router1 }
+      subnet: { get_resource: int-subnet }

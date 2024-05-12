@@ -1,0 +1,79 @@
+
+heat_template_version: 2015-10-15
+description: create a server
+
+resources:
+  node-1 :
+    type: OS::Nova::Server
+    properties:
+      name: etcd-node-1
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: CoreOS
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.109/cloud-configs/coreos/coreos-config.yml
+      networks:
+        - network: private_network
+
+  node-2:
+    type: OS::Nova::Server
+    properties:
+      name: etcd-node-2
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: CoreOS
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.109/cloud-configs/coreos/coreos-config.yml
+      networks:
+        - network: private_network
+  
+  node-3:
+    type: OS::Nova::Server
+    properties:
+      name:  etcd-node-3
+      security_groups:
+        - default
+      key_name: cloudkey
+      flavor: m1.medium
+      image: CoreOS
+      user_data_format: RAW
+      user_data:
+        get_file: http://10.0.0.109/cloud-configs/coreos/coreos-config.yml
+      networks:
+        - network: private_network
+  
+  floating_ip1:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: external_network
+  floating_ip2:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: external_network
+  floating_ip3:
+    type: OS::Nova::FloatingIP
+    properties:
+      pool: external_network
+      
+  association1:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip1 }
+      server_id: { get_resource:  node-1}
+  association2:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip2 }
+      server_id: { get_resource: node-2}
+  association3:
+    type: OS::Nova::FloatingIPAssociation
+    properties:
+      floating_ip: { get_resource: floating_ip3 }
+      server_id: { get_resource: node-3}
+
